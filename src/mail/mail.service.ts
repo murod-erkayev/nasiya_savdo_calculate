@@ -1,12 +1,13 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { User } from '../users/scheam/user.entity';
+import { Admin } from '../admin/entities/admin.entity';
 @Injectable()
 export class MailService {
     constructor(private readonly mailerSerivce: MailerService) {}
 
     async sendMailUser(user:User){
-        const url = `${process.env.API_HOST}/api/user/activate/${user.activation_link}`;
+        const url = `${process.env.API_HOST}/api/users/activate/${user.activation_link}`;
         console.log(url);
 
         await this.mailerSerivce.sendMail({
@@ -15,6 +16,20 @@ export class MailService {
             template: './confirmation', 
             context: { 
                 name: user.first_name,
+                url,
+             }, 
+        });
+    }
+    async sendMailAdmin(admin:Admin){
+        const url = `${process.env.API_HOST}/api/admin/activate/${admin.activation_link}`;
+        console.log(url);
+
+        await this.mailerSerivce.sendMail({
+            to: admin.email,
+            subject: 'Welcome to Saiya Savdo appclication',
+            template: './confirmation', 
+            context: { 
+                name: admin.username,
                 url,
              }, 
         });
